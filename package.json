@@ -1,0 +1,23 @@
+{
+  "name": "Adtrader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle.js",
+  "scripts": {
+    "compile": "truffle.cmd compile",
+    "migrate": "truffle.cmd migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/damyan-stanchev/math.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/damyan-stanchev/math/issues"
+  },
+  "homepage": "https://github.com/damyan-stanchev/math#readme",
+  "dependencies": {
+    "zeppelin-solidity": "^1.5.0"
+  }
+}
