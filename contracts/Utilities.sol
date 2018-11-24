@@ -15,9 +15,13 @@ contract AdHashUtilities {
 
 	constructor () public {}
 
+	//Creatives-related functionality
+
 	function announceCreative(string creative) public payable {
 		creatives[msg.sender][creative] = true;
 	}
+
+	//Deposit-related functionality
 
 	function makeDeposit(address bidder) public payable {
 		deposits[msg.sender] += msg.value;
@@ -29,10 +33,12 @@ contract AdHashUtilities {
 		emit Withdraw(msg.sender, bidder, msg.value);
 	}
 
-	function FineDeposit(address advertiser) public payable {
+	function fineDeposit(address advertiser) public payable {
 		deposits[advertiser] -= msg.value;
 		emit Fine(advertiser, msg.sender, msg.value);
 	}
+
+	//Payment-related functionality
 
 	function makePaymentToPublisher(address publisher) public payable {
 		paymentsPublisher[publisher] += msg.value;
