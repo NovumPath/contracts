@@ -11,15 +11,19 @@ contract Utilities {
 	event Deposit(address from, address to, uint amount);
 	event Withdraw(address from, address to, uint amount);
 	event Fine(address from, address to, uint amount);
-	event PaymentPublisher(address from, address to, uint amount);
-	event PaymentBidder(address from, address to, uint amount);
+	event PaymentPublisher(address from, address to, uint amount, uint period, string shortHash, string longHash);
+	event PaymentBidder(address from, address to, uint amount, uint period, string shortHash, string longHash);
 
 	constructor () public {}
 
 	//Creatives-related functionality
 
 	function announceCreative(string creative) public payable {
-		//TODO: Validate advertiser, validate that creative is new
+		for (uint i; i < creatives[msg.sender].length; i++) {
+			if (keccak256(abi.encodePacked(creatives[msg.sender][i])) == keccak256(abi.encodePacked(creative))) {
+				revert("Creative already exists");
+			}
+		}
 		creatives[msg.sender].push(creative);
 	}
 
@@ -35,24 +39,34 @@ contract Utilities {
 	}
 
 	function withdrawDeposit(address bidder) public payable {
+		if (deposits[msg.sender] < msg.value) {
+			revert("Not enough amount");
+		}
 		deposits[msg.sender] -= msg.value;
 		emit Withdraw(msg.sender, bidder, msg.value);
 	}
 
 	function fineDeposit(address advertiser) public payable {
+		if (deposits[advertiser] < msg.value) {
+			revert("Not enough amount");
+		}
 		deposits[advertiser] -= msg.value;
 		emit Fine(advertiser, msg.sender, msg.value);
 	}
 
-	//Payment-related functionality
-
-	function makePaymentToPublisher(address publisher) public payable {
-		paymentsPublisher[publisher] += msg.value;
-		emit PaymentPublisher(msg.sender, publisher, msg.value);
+	function getDeposit(address advertiser) public view returns (uint _amount) {
+		_amount = deposits[advertiser];
 	}
 
-	function makePaymentToBidder(address bidder) public payable {
+	//Payment-related functionality
+
+	function makePaymentToPublisher(address publisher, uint period, string shortHash, string longHash) public payable {
+		paymentsPublisher[publisher] += msg.value;
+		emit PaymentPublisher(msg.sender, publisher, msg.value, period, shortHash, longHash);
+	}
+
+	function makePaymentToBidder(address bidder, uint period, string shortHash, string longHash) public payable {
 		paymentsBidder[bidder] += msg.value;
-		emit PaymentBidder(msg.sender, bidder, msg.value);
+		emit PaymentBidder(msg.sender, bidder, msg.value, period, shortHash, longHash);
 	}
 }
