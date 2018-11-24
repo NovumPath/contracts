@@ -29,9 +29,13 @@ contract Members is Ownable {
 		ALLOW_BIDDERS = value;
 	}
 
+	function getAllowBidders() public view returns (bool allowBiddersInner) {
+		allowBiddersInner = ALLOW_BIDDERS;
+	}
+
 	function registerMember(uint role, string name, string endpoint) public payable { //TODO: Register member on behalf
-		if (members[msg.sender].role == 0) {
-			revert();
+		if (members[msg.sender].role != 0) {
+			revert("Member is already registered");
 		}
 		if (role == ROLE_BIDDER && ALLOW_BIDDERS) {
 			members[msg.sender] = Member(name, endpoint, role, false);
@@ -42,9 +46,15 @@ contract Members is Ownable {
 		} else if (role == ROLE_VOTER) {
 			members[msg.sender] = Member(name, "", role, false);
 		} else {
-			revert();
+			revert("Unknown role");
 		}
 		emit RegisterMember(role, name, endpoint);
+	}
+
+	function getMember(address endpoint) public view returns (uint _role, string _name, string _endpoint) {
+		_role = members[endpoint].role;
+		_name = members[endpoint].name;
+		_endpoint = members[endpoint].endpoint;
 	}
 
 	function changeInformation(string name, string endpoint) public payable {

@@ -6,7 +6,7 @@
   "scripts": {
     "compile": "node ./node_modules/truffle/build/cli.bundled.js compile",
     "migrate": "node ./node_modules/truffle/build/cli.bundled.js migrate --reset",
-    "network": "node ./node_modules/ganache-cli/cli.js"
+    "network": "node ./node_modules/ganache-cli/cli.js -l 8000000 --account=\"0x1111111111111111111111111111111111111111111111111111111111111111,100000000000000000000\""
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "dependencies": {
     "ganache-cli": "^6.2.3",
     "openzeppelin-solidity": "^2.0.0",
-    "truffle": "^4.1.14"
+    "truffle": "^4.1.14",
+    "web3": "^1.0.0-beta.36"
   }
 }
