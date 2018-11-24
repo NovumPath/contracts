@@ -5,7 +5,7 @@
   "main": "truffle.js",
   "scripts": {
     "compile": "node ./node_modules/truffle/build/cli.bundled.js compile",
-    "migrate": "node ./node_modules/truffle/build/cli.bundled.js migrate",
+    "migrate": "node ./node_modules/truffle/build/cli.bundled.js migrate --reset",
     "network": "node ./node_modules/ganache-cli/cli.js"
   },
   "repository": {

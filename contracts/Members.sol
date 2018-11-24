@@ -2,7 +2,7 @@ pragma solidity ^0.4.4;
 
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract AdHashMembers is Ownable {
+contract Members is Ownable {
 
 	uint public constant ROLE_BIDDER = 1;
 	uint public constant ROLE_ADVERTISER = 2;
