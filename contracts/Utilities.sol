@@ -1,8 +1,9 @@
 pragma solidity ^0.4.4;
+pragma experimental ABIEncoderV2;
 
 contract Utilities {
 
-	mapping (address => mapping (string => bool)) creatives;
+	mapping (address => string[]) creatives;
 	mapping (address => uint) deposits; //TODO: multiple bidders
 	mapping (address => uint) paymentsPublisher; //TODO: multiple bidders
 	mapping (address => uint) paymentsBidder; //TODO: multiple bidders
@@ -18,7 +19,12 @@ contract Utilities {
 	//Creatives-related functionality
 
 	function announceCreative(string creative) public payable {
-		creatives[msg.sender][creative] = true;
+		//TODO: Validate advertiser, validate that creative is new
+		creatives[msg.sender].push(creative);
+	}
+
+	function getCreatives(address member) public view returns (string[] _creatives) {
+		_creatives = creatives[member];
 	}
 
 	//Deposit-related functionality

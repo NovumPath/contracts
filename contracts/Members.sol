@@ -37,7 +37,10 @@ contract Members is Ownable {
 		if (members[msg.sender].role != 0) {
 			revert("Member is already registered");
 		}
-		if (role == ROLE_BIDDER && ALLOW_BIDDERS) {
+		if (role == ROLE_BIDDER) {
+			if (!ALLOW_BIDDERS) {
+				revert("Bidders are not allowed");
+			}
 			members[msg.sender] = Member(name, endpoint, role, false);
 		} else if (role == ROLE_ADVERTISER) {
 			members[msg.sender] = Member(name, endpoint, role, false);
@@ -51,10 +54,11 @@ contract Members is Ownable {
 		emit RegisterMember(role, name, endpoint);
 	}
 
-	function getMember(address endpoint) public view returns (uint _role, string _name, string _endpoint) {
+	function getMember(address endpoint) public view returns (uint _role, string _name, string _endpoint, bool _blocked) {
 		_role = members[endpoint].role;
 		_name = members[endpoint].name;
 		_endpoint = members[endpoint].endpoint;
+		_blocked = members[endpoint].blocked;
 	}
 
 	function changeInformation(string name, string endpoint) public payable {
@@ -68,7 +72,7 @@ contract Members is Ownable {
 
 	function blockMember(address member) public payable {
 		if (members[msg.sender].role != ROLE_BIDDER) {
-			revert();
+			revert("The sender must be a bidder");
 		}
 		members[msg.sender].blocked = true;
 		emit BlockMember(member);
@@ -76,7 +80,7 @@ contract Members is Ownable {
 
 	function unblockMember(address member) public payable {
 		if (members[msg.sender].role != ROLE_BIDDER) {
-			revert();
+			revert("The sender must be a bidder");
 		}
 		members[msg.sender].blocked = false;
 		emit UnblockMember(member);
