@@ -1,5 +1,5 @@
-var TestCoin = artifacts.require("./TestCoin.sol");
+var AdHashToken = artifacts.require("./AdHashToken.sol");
 
 module.exports = function(deployer) {
-	deployer.deploy(TestCoin);
+	deployer.deploy(AdHashToken);
 };
