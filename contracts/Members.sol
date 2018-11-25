@@ -25,7 +25,7 @@ contract Members is Ownable {
 	event BlockMember(address member);
 	event UnblockMember(address member);
 
-	function allowBidders(bool value) public payable { //TODO: OwnerOnly
+	function allowBidders(bool value) public payable onlyOwner {
 		ALLOW_BIDDERS = value;
 	}
 

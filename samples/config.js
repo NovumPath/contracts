@@ -25,6 +25,7 @@ exports.ROLE_OTHER = 5;
 const web3 = new web3Library();
 const web3HttpProvider = new web3.providers.HttpProvider(exports.httpProvider);
 web3.setProvider(web3HttpProvider);
+exports.web3 = web3;
 
 exports.Members = new web3.eth.Contract(
 	exports.abiMembers,

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/damyan-stanchev/math#readme",
   "dependencies": {
+    "abi-decoder": "^1.2.0",
     "ganache-cli": "^6.2.3",
     "openzeppelin-solidity": "^2.0.0",
     "truffle": "^4.1.14",

@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 contract Utilities {
 
-	mapping (address => string[]) creatives;
+	mapping (address => address[]) creatives;
 	mapping (address => uint) deposits; //TODO: multiple bidders
 	mapping (address => uint) paymentsPublisher; //TODO: multiple bidders
 	mapping (address => uint) paymentsBidder; //TODO: multiple bidders
@@ -11,23 +11,23 @@ contract Utilities {
 	event Deposit(address from, address to, uint amount);
 	event Withdraw(address from, address to, uint amount);
 	event Fine(address from, address to, uint amount);
-	event PaymentPublisher(address from, address to, uint amount, uint period, string shortHash, string longHash);
-	event PaymentBidder(address from, address to, uint amount, uint period, string shortHash, string longHash);
+	event PaymentPublisher(address from, address to, uint amount, uint period, address shortHash, address longHash);
+	event PaymentBidder(address from, address to, uint amount, uint period, address shortHash, address longHash);
 
 	constructor () public {}
 
 	//Creatives-related functionality
 
-	function announceCreative(string creative) public payable {
+	function announceCreative(address creative) public payable {
 		for (uint i; i < creatives[msg.sender].length; i++) {
-			if (keccak256(abi.encodePacked(creatives[msg.sender][i])) == keccak256(abi.encodePacked(creative))) {
+			if (creatives[msg.sender][i] == creative) {
 				revert("Creative already exists");
 			}
 		}
 		creatives[msg.sender].push(creative);
 	}
 
-	function getCreatives(address member) public view returns (string[] _creatives) {
+	function getCreatives(address member) public view returns (address[] _creatives) {
 		_creatives = creatives[member];
 	}
 
@@ -60,12 +60,12 @@ contract Utilities {
 
 	//Payment-related functionality
 
-	function makePaymentToPublisher(address publisher, uint period, string shortHash, string longHash) public payable {
+	function makePaymentToPublisher(address publisher, uint period, address shortHash, address longHash) public payable {
 		paymentsPublisher[publisher] += msg.value;
 		emit PaymentPublisher(msg.sender, publisher, msg.value, period, shortHash, longHash);
 	}
 
-	function makePaymentToBidder(address bidder, uint period, string shortHash, string longHash) public payable {
+	function makePaymentToBidder(address bidder, uint period, address shortHash, address longHash) public payable {
 		paymentsBidder[bidder] += msg.value;
 		emit PaymentBidder(msg.sender, bidder, msg.value, period, shortHash, longHash);
 	}
