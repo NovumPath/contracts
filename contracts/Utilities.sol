@@ -3,7 +3,6 @@ pragma experimental ABIEncoderV2;
 
 contract Utilities {
 
-	mapping (address => address[]) creatives;
 	mapping (address => uint) deposits; //TODO: multiple bidders
 	mapping (address => uint) paymentsPublisher; //TODO: multiple bidders
 	mapping (address => uint) paymentsBidder; //TODO: multiple bidders
@@ -15,21 +14,6 @@ contract Utilities {
 	event PaymentBidder(address from, address to, uint amount, uint period, address shortHash, address longHash);
 
 	constructor () public {}
-
-	//Creatives-related functionality
-
-	function announceCreative(address creative) public payable {
-		for (uint i; i < creatives[msg.sender].length; i++) {
-			if (creatives[msg.sender][i] == creative) {
-				revert("Creative already exists");
-			}
-		}
-		creatives[msg.sender].push(creative);
-	}
-
-	function getCreatives(address member) public view returns (address[] _creatives) {
-		_creatives = creatives[member];
-	}
 
 	//Deposit-related functionality
 
