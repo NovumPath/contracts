@@ -1,12 +1,18 @@
 pragma solidity ^0.4.4;
 pragma experimental ABIEncoderV2;
 
-contract Utilities {
+import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-	mapping (address => uint) deposits; //TODO: multiple bidders
-	mapping (address => uint) paymentsPublisher; //TODO: multiple bidders
-	mapping (address => uint) paymentsBidder; //TODO: multiple bidders
+contract Utilities is Ownable {
 
+	address private CONTRACT_MEMBERS;
+
+	//TODO: multiple bidders
+	mapping (address => uint) deposits;
+	mapping (address => uint) paymentsPublisher;
+	mapping (address => uint) paymentsBidder;
+
+	//TODO: multiple bidders
 	event Deposit(address from, address to, uint amount);
 	event Withdraw(address from, address to, uint amount);
 	event Fine(address from, address to, uint amount);
@@ -14,6 +20,11 @@ contract Utilities {
 	event PaymentBidder(address from, address to, uint amount, uint period, address shortHash, address longHash);
 
 	constructor () public {}
+
+	//Initialization functions
+	function changeMembersAddress(address membersAddress) public payable onlyOwner {
+		CONTRACT_MEMBERS = membersAddress;
+	}
 
 	//Deposit-related functionality
 
@@ -26,11 +37,13 @@ contract Utilities {
 		if (deposits[msg.sender] < msg.value) {
 			revert("Not enough amount");
 		}
+		//TODO: check if there are no active votings
 		deposits[msg.sender] -= msg.value;
 		emit Withdraw(msg.sender, bidder, msg.value);
 	}
 
 	function fineDeposit(address advertiser) public payable {
+		//TODO: Bidder only
 		if (deposits[advertiser] < msg.value) {
 			revert("Not enough amount");
 		}
@@ -46,11 +59,13 @@ contract Utilities {
 
 	function makePaymentToPublisher(address publisher, uint period, address shortHash, address longHash) public payable {
 		paymentsPublisher[publisher] += msg.value;
+		//TODO: forward
 		emit PaymentPublisher(msg.sender, publisher, msg.value, period, shortHash, longHash);
 	}
 
 	function makePaymentToBidder(address bidder, uint period, address shortHash, address longHash) public payable {
 		paymentsBidder[bidder] += msg.value;
+		//TODO: forward
 		emit PaymentBidder(msg.sender, bidder, msg.value, period, shortHash, longHash);
 	}
 }

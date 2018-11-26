@@ -5,7 +5,7 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detaile
 
 contract Token is ERC20, ERC20Detailed {
 
-	uint256 public constant INITIAL_SUPPLY = 10000 * (10 ** 18);
+	uint256 public constant INITIAL_SUPPLY = (10 ** 9) * (10 ** 18);
 
     /**
      * Constructor that gives msg.sender all of existing tokens.

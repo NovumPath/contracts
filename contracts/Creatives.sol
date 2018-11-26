@@ -5,8 +5,8 @@ import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 contract Creatives is Ownable {
 
 	mapping (address => address[]) creatives;
-	mapping (address => uint) threshold;
-	mapping (address => bool) blocked;
+	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
+	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
 
 	uint public constant INITIAL_THRESHOLD = 30;
 	uint public constant THRESHOLD_STEP = 10;
@@ -16,13 +16,15 @@ contract Creatives is Ownable {
 	event StartBlockCreative(address owner, address creative, string reason);
 
 	function announceCreative(address creative) public payable {
-		for (uint i; i < creatives[msg.sender].length; i++) {
-			if (creatives[msg.sender][i] == creative) {
-				revert("Creative already exists");
-			}
-		}
 		creatives[msg.sender].push(creative);
 		emit AnnounceCreative(msg.sender, creative);
+	}
+
+	function announceCreatives(address[] creativesList) public payable {
+		for (uint j; j < creativesList.length; j++) {
+			creatives[msg.sender].push(creativesList[j]);
+			emit AnnounceCreative(msg.sender, creativesList[j]);
+		}
 	}
 
 	function getCreatives(address member) public view returns (address[] _creatives) {
@@ -41,12 +43,13 @@ contract Creatives is Ownable {
 
 	function endBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst) public payable {
 		//TODO: Check ROLE_BIDDER
+		//TODO: UPDATE FORMULAS
 		if (votesFor > votesAgainst) {
 			blocked[creative] = true;
-			//TODO: send deposit to bidder
+			//TODO: revert deposit to author
 		} else {
 			threshold[creative] += THRESHOLD_STEP;
-			//TODO: revert deposit
+			//TODO: send deposit to voters wallet
 		}
 		emit EndBlockCreative(owner, creative, votesFor, votesAgainst);
 	}
