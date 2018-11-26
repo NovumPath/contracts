@@ -4,9 +4,11 @@ const {
 	bidderWalletAddress
 } = require('../config');
 
-Utilities.methods.withdrawDeposit(bidderWalletAddress).send({
-	from: advertiserWalletAddress,
-	value: 1000000000000000000
+Utilities.methods.withdrawDeposit(
+	bidderWalletAddress,
+	"100000000000000000"
+).send({
+	from: advertiserWalletAddress
 }, function(error, transactionId) {
 	if (error) {
 		console.log('Error', error);

@@ -1,4 +1,4 @@
-const { Utilities, contractAddressMembers, bidderWalletAddress } = require('./config');
+const { Utilities, contractAddressMembers, bidderWalletAddress } = require('../config');
 
 Utilities.methods.changeMembersAddress(contractAddressMembers).send({
 	from: bidderWalletAddress

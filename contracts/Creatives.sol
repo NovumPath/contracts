@@ -8,12 +8,29 @@ contract Creatives is Ownable {
 	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
 	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
 
-	uint public constant INITIAL_THRESHOLD = 30;
+	uint public constant INITIAL_THRESHOLD = 50;
 	uint public constant THRESHOLD_STEP = 10;
+
+	uint public constant ROLE_BIDDER = 1;
+	uint public constant ROLE_ADVERTISER = 2;
+	uint public constant ROLE_PUBLISHER = 3;
+	uint public constant ROLE_VOTER = 4;
+
+	address private CONTRACT_MEMBERS;
 
 	event AnnounceCreative(address counterparty, address creative);
 	event EndBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst);
 	event StartBlockCreative(address owner, address creative, string reason);
+
+	constructor () public {}
+
+	//Initialization functions
+
+	function changeMembersAddress(address membersAddress) public payable onlyOwner {
+		CONTRACT_MEMBERS = membersAddress;
+	}
+
+	//General functions
 
 	function announceCreative(address creative) public payable {
 		creatives[msg.sender].push(creative);
@@ -42,7 +59,9 @@ contract Creatives is Ownable {
 	}
 
 	function endBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst) public payable {
-		//TODO: Check ROLE_BIDDER
+		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
+			revert("Only bidders can fine other members");
+		}
 		//TODO: UPDATE FORMULAS
 		if (votesFor > votesAgainst) {
 			blocked[creative] = true;
@@ -54,5 +73,27 @@ contract Creatives is Ownable {
 		emit EndBlockCreative(owner, creative, votesFor, votesAgainst);
 	}
 
-	constructor () public {}
+	//Private functions
+
+	function getMemberRole(address counterparty) private returns (uint role) {
+		bytes4 sig = bytes4(keccak256("getMemberRole(address)"));
+		address to = CONTRACT_MEMBERS;
+		assembly {
+			let x := mload(0x40) //Find empty storage location using "free memory pointer"
+			mstore(x, sig) //Place signature at begining of empty storage
+			mstore(add(x, 0x04), counterparty) //Place first argument directly next to signature
+			//mstore(add(x, 0x24), b) //Place second argument next to first, padded to 32 bytes
+			let success := call(
+				5000, //5k gas
+				to, //To address
+				0, //No value to send
+				x, //Inputs are stored at location x
+				0x24, //Inputs are 32+4 bytes long
+				x, //Store output over input (saves space)
+				0x20
+			) //Outputs are 32 bytes long
+			role := mload(x) //Assign output value
+			mstore(0x40, add(x, 0x24)) // Set storage pointer to empty space
+		}
+	}
 }
