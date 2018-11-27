@@ -5,10 +5,15 @@ const networkMembers = Object.keys(buildInfoMembers.networks)[Object.keys(buildI
 exports.contractAddressMembers = buildInfoMembers.networks[networkMembers].address;
 exports.abiMembers = buildInfoMembers.abi;
 
-const buildInfoCreatives = require('../build/contracts/Creatives.json');
-const networkCreatives = Object.keys(buildInfoCreatives.networks)[Object.keys(buildInfoCreatives.networks).length - 1];
-exports.contractAddressCreatives = buildInfoCreatives.networks[networkCreatives].address;
-exports.abiCreatives = buildInfoCreatives.abi;
+const buildInfoCreativesRegistry = require('../build/contracts/CreativesRegistry.json');
+const networkCreativesRegistry = Object.keys(buildInfoCreativesRegistry.networks)[Object.keys(buildInfoCreativesRegistry.networks).length - 1];
+exports.contractAddressCreativesRegistry = buildInfoCreativesRegistry.networks[networkCreativesRegistry].address;
+exports.abiCreativesRegistry = buildInfoCreativesRegistry.abi;
+
+const buildInfoCreativesV1 = require('../build/contracts/CreativesV1.json');
+const networkCreativesV1 = Object.keys(buildInfoCreativesV1.networks)[Object.keys(buildInfoCreativesV1.networks).length - 1];
+exports.contractAddressCreativesV1 = buildInfoCreativesV1.networks[networkCreativesV1].address;
+exports.abiCreativesV1 = buildInfoCreativesV1.abi;
 
 const buildInfoUtilities = require('../build/contracts/Utilities.json');
 const networkUtilities = Object.keys(buildInfoUtilities.networks)[Object.keys(buildInfoUtilities.networks).length - 1];
@@ -38,9 +43,15 @@ exports.Members = new web3.eth.Contract(
 	{ gas: 300000 }
 );
 
-exports.Creatives = new web3.eth.Contract(
-	exports.abiCreatives,
-	exports.contractAddressCreatives,
+exports.CreativesRegistry = new web3.eth.Contract(
+	exports.abiCreativesRegistry,
+	exports.contractAddressCreativesRegistry,
+	{ gas: 300000 }
+);
+
+exports.CreativesV1 = new web3.eth.Contract(
+	exports.abiCreativesV1,
+	exports.contractAddressCreativesRegistry, //!
 	{ gas: 300000 }
 );
 

@@ -1,6 +1,6 @@
-const { Creatives, advertiserWalletAddress } = require('../config');
+const { CreativesV1, advertiserWalletAddress } = require('../config');
 
-Creatives.methods.getCreatives(advertiserWalletAddress).call(function(error, result) {
+CreativesV1.methods.getCreatives(advertiserWalletAddress).call(function(error, result) {
 	if (error) {
 		console.log('Error', error);
 	} else {

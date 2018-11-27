@@ -1,10 +1,10 @@
 const {
-	CreativesV1,
-	contractAddressMembers,
+	CreativesRegistry,
+	contractAddressCreativesV1,
 	bidderWalletAddress
 } = require('../config');
 
-CreativesV1.methods.changeMembersAddress(contractAddressMembers).send({
+CreativesRegistry.methods.setContractAddress(contractAddressCreativesV1).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {

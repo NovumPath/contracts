@@ -1,29 +1,13 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.21;
 
+import './CreativesStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract Creatives is Ownable {
-
-	uint public constant ROLE_BIDDER = 1;
-	uint public constant ROLE_ADVERTISER = 2;
-	uint public constant ROLE_PUBLISHER = 3;
-	uint public constant ROLE_VOTER = 4;
-
-	address private CONTRACT_MEMBERS;
-	uint public INITIAL_THRESHOLD = 50;
-	uint public THRESHOLD_STEP = 10;
-
-	mapping (address => address[]) creatives;
-	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
-	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
+contract CreativesV1 is CreativesStorage, Ownable {
 
 	event AnnounceCreative(address counterparty, address creative);
 	event EndBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst);
 	event StartBlockCreative(address owner, address creative, string reason);
-
-	constructor () public {}
-
-	//Initialization functions
 
 	function changeMembersAddress(address membersAddress) public payable onlyOwner {
 		CONTRACT_MEMBERS = membersAddress;
@@ -36,8 +20,6 @@ contract Creatives is Ownable {
 	function changeThresholdStep(uint step) public payable onlyOwner {
 		THRESHOLD_STEP = step;
 	}
-
-	//General functions
 
 	function announceCreative(address creative) public payable {
 		creatives[msg.sender].push(creative);
@@ -108,3 +90,4 @@ contract Creatives is Ownable {
 		}
 	}
 }
+

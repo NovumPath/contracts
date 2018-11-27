@@ -1,10 +1,9 @@
 const {
 	CreativesV1,
-	contractAddressMembers,
 	bidderWalletAddress
 } = require('../config');
 
-CreativesV1.methods.changeMembersAddress(contractAddressMembers).send({
+CreativesV1.methods.changeThresholdStep(15).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {
