@@ -1,9 +1,14 @@
 const web3Library = require('web3');
 
-const buildInfoMembers = require('../build/contracts/Members.json');
-const networkMembers = Object.keys(buildInfoMembers.networks)[Object.keys(buildInfoMembers.networks).length - 1];
-exports.contractAddressMembers = buildInfoMembers.networks[networkMembers].address;
-exports.abiMembers = buildInfoMembers.abi;
+const buildInfoMembersRegistry = require('../build/contracts/MembersRegistry.json');
+const networkMembersRegistry = Object.keys(buildInfoMembersRegistry.networks)[Object.keys(buildInfoMembersRegistry.networks).length - 1];
+exports.contractAddressMembersRegistry = buildInfoMembersRegistry.networks[networkMembersRegistry].address;
+exports.abiMembersRegistry = buildInfoMembersRegistry.abi;
+
+const buildInfoMembersV1 = require('../build/contracts/MembersV1.json');
+const networkMembersV1 = Object.keys(buildInfoMembersV1.networks)[Object.keys(buildInfoMembersV1.networks).length - 1];
+exports.contractAddressMembersV1 = buildInfoMembersV1.networks[networkMembersV1].address;
+exports.abiMembersV1 = buildInfoMembersV1.abi;
 
 const buildInfoCreativesRegistry = require('../build/contracts/CreativesRegistry.json');
 const networkCreativesRegistry = Object.keys(buildInfoCreativesRegistry.networks)[Object.keys(buildInfoCreativesRegistry.networks).length - 1];
@@ -42,9 +47,15 @@ const web3HttpProvider = new web3.providers.HttpProvider(exports.httpProvider);
 web3.setProvider(web3HttpProvider);
 exports.web3 = web3;
 
-exports.Members = new web3.eth.Contract(
-	exports.abiMembers,
-	exports.contractAddressMembers,
+exports.MembersRegistry = new web3.eth.Contract(
+	exports.abiMembersRegistry,
+	exports.contractAddressMembersRegistry,
+	{ gas: 300000 }
+);
+
+exports.MembersV1 = new web3.eth.Contract(
+	exports.abiMembersV1,
+	exports.contractAddressMembersRegistry, //!
 	{ gas: 300000 }
 );
 

@@ -1,10 +1,10 @@
 const {
-	Members,
+	MembersV1,
 	advertiserWalletAddress,
 	bidderWalletAddress
 } = require('../config');
 
-Members.methods.unblockMember(advertiserWalletAddress).send({
+MembersV1.methods.unblockMember(advertiserWalletAddress).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {

@@ -1,10 +1,10 @@
 const {
-	Members,
+	MembersV1,
 	bidderWalletAddress,
 	ROLE_BIDDER
 } = require('../config');
 
-Members.methods.registerMember(
+MembersV1.methods.registerMember(
 	ROLE_BIDDER,
 	"AdHash bidder",
 	"http://bidder.adhash.org/protocol.php"

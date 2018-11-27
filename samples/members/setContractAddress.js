@@ -1,10 +1,10 @@
 const {
-	MembersV1,
-	advertiserWalletAddress,
+	MembersRegistry,
+	contractAddressMembersV1,
 	bidderWalletAddress
 } = require('../config');
 
-MembersV1.methods.blockMember(advertiserWalletAddress).send({
+MembersRegistry.methods.setContractAddress(contractAddressMembersV1).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {

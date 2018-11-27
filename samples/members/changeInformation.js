@@ -1,9 +1,9 @@
 const {
-	Members,
+	MembersV1,
 	bidderWalletAddress
 } = require('../config');
 
-Members.methods.changeInformation(
+MembersV1.methods.changeInformation(
 	"AdHash bidder 2",
 	"http://bidder.adhash.org/protocol2.php"
 ).send({

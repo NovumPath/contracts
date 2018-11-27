@@ -1,25 +1,9 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.21;
 
+import './MembersStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract Members is Ownable {
-
-	uint public constant ROLE_BIDDER = 1;
-	uint public constant ROLE_ADVERTISER = 2;
-	uint public constant ROLE_PUBLISHER = 3;
-	uint public constant ROLE_VOTER = 4;
-
-	bool private ALLOW_BIDDERS = false;
-
-	struct Member {
-		string name;
-		string endpoint;
-		uint role;
-		bool blocked;
-		bool voter;
-    }
-
-	mapping (address => Member) members; //TODO: multiple bidders
+contract MembersV1 is MembersStorage, Ownable {
 
 	event RegisterMember(address member, uint role, string name, string endpoint);
 	event ChangeInformation(address member, string name, string endpoint);
@@ -56,11 +40,12 @@ contract Members is Ownable {
 		emit RegisterMember(msg.sender, role, name, endpoint);
 	}
 
-	function getMember(address counterparty) public view returns (uint role, string name, string endpoint, bool blocked) {
+	function getMember(address counterparty) public view returns (uint role, string name, string endpoint, bool blocked, bool voter) {
 		role = members[counterparty].role;
 		name = members[counterparty].name;
 		endpoint = members[counterparty].endpoint;
 		blocked = members[counterparty].blocked;
+		voter = members[counterparty].voter;
 	}
 
 	function getMemberRole(address counterparty) public view returns (uint role) {
@@ -100,6 +85,4 @@ contract Members is Ownable {
 	function fundTransfer(uint256 amount) public payable onlyOwner {
 		msg.sender.transfer(amount);
     }
-
-	constructor () public {}
 }

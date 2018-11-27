@@ -1,6 +1,9 @@
-const { Members, bidderWalletAddress } = require('../config');
+const {
+	MembersV1,
+	bidderWalletAddress
+} = require('../config');
 
-Members.methods.allowBidders(true).send({
+MembersV1.methods.allowBidders(true).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {
