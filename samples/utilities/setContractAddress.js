@@ -1,12 +1,11 @@
 const {
-	UtilitiesV1,
-	advertiserWalletAddress,
+	UtilitiesRegistry,
+	contractAddressUtilitiesV1,
 	bidderWalletAddress
 } = require('../config');
 
-UtilitiesV1.methods.makeDeposit(bidderWalletAddress).send({
-	from: advertiserWalletAddress,
-	value: "1000000000000000000"
+UtilitiesRegistry.methods.setContractAddress(contractAddressUtilitiesV1).send({
+	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {
 		console.log('Error', error);

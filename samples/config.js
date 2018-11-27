@@ -15,10 +15,15 @@ const networkCreativesV1 = Object.keys(buildInfoCreativesV1.networks)[Object.key
 exports.contractAddressCreativesV1 = buildInfoCreativesV1.networks[networkCreativesV1].address;
 exports.abiCreativesV1 = buildInfoCreativesV1.abi;
 
-const buildInfoUtilities = require('../build/contracts/Utilities.json');
-const networkUtilities = Object.keys(buildInfoUtilities.networks)[Object.keys(buildInfoUtilities.networks).length - 1];
-exports.contractAddressUtilities = buildInfoUtilities.networks[networkUtilities].address;
-exports.abiUtilities = buildInfoUtilities.abi;
+const buildInfoUtilitiesRegistry = require('../build/contracts/UtilitiesRegistry.json');
+const networkUtilitiesRegistry = Object.keys(buildInfoUtilitiesRegistry.networks)[Object.keys(buildInfoUtilitiesRegistry.networks).length - 1];
+exports.contractAddressUtilitiesRegistry = buildInfoUtilitiesRegistry.networks[networkUtilitiesRegistry].address;
+exports.abiUtilitiesRegistry = buildInfoUtilitiesRegistry.abi;
+
+const buildInfoUtilitiesV1 = require('../build/contracts/UtilitiesV1.json');
+const networkUtilitiesV1 = Object.keys(buildInfoUtilitiesV1.networks)[Object.keys(buildInfoUtilitiesV1.networks).length - 1];
+exports.contractAddressUtilitiesV1 = buildInfoUtilitiesV1.networks[networkUtilitiesV1].address;
+exports.abiUtilitiesV1 = buildInfoUtilitiesV1.abi;
 
 exports.httpProvider = 'http://localhost:8545';
 
@@ -55,8 +60,14 @@ exports.CreativesV1 = new web3.eth.Contract(
 	{ gas: 300000 }
 );
 
-exports.Utilities = new web3.eth.Contract(
-	exports.abiUtilities,
-	exports.contractAddressUtilities,
+exports.UtilitiesRegistry = new web3.eth.Contract(
+	exports.abiUtilitiesRegistry,
+	exports.contractAddressUtilitiesRegistry,
+	{ gas: 300000 }
+);
+
+exports.UtilitiesV1 = new web3.eth.Contract(
+	exports.abiUtilitiesV1,
+	exports.contractAddressUtilitiesRegistry, //!
 	{ gas: 300000 }
 );

@@ -1,6 +1,10 @@
-const { Utilities, contractAddressMembers, bidderWalletAddress } = require('../config');
+const {
+	UtilitiesV1,
+	contractAddressMembers,
+	bidderWalletAddress
+} = require('../config');
 
-Utilities.methods.changeMembersAddress(contractAddressMembers).send({
+UtilitiesV1.methods.changeMembersAddress(contractAddressMembers).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {
@@ -9,4 +13,3 @@ Utilities.methods.changeMembersAddress(contractAddressMembers).send({
 		console.log('Transaction successful', transactionId);
 	}
 });
-

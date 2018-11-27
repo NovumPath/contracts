@@ -1,10 +1,10 @@
 const {
-	Utilities,
+	UtilitiesV1,
 	advertiserWalletAddress,
 	bidderWalletAddress
 } = require('../config');
 
-Utilities.methods.withdrawDeposit(
+UtilitiesV1.methods.withdrawDeposit(
 	bidderWalletAddress,
 	"100000000000000000"
 ).send({

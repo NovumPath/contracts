@@ -1,10 +1,10 @@
 const {
-	Utilities,
+	UtilitiesV1,
 	advertiserWalletAddress,
 	bidderWalletAddress
 } = require('../config');
 
-Utilities.methods.fineDeposit(
+UtilitiesV1.methods.fineDeposit(
 	advertiserWalletAddress,
 	"100000000000000000"
 ).send({

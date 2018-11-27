@@ -1,29 +1,15 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.21;
 
+import './UtilitiesStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract Utilities is Ownable {
-
-	uint public constant ROLE_BIDDER = 1;
-	uint public constant ROLE_ADVERTISER = 2;
-	uint public constant ROLE_PUBLISHER = 3;
-	uint public constant ROLE_VOTER = 4;
-
-	address private CONTRACT_MEMBERS;
-
-	//TODO: multiple bidders
-	mapping (address => uint256) deposits;
-	mapping (address => uint256) paymentsPublisher;
-	mapping (address => uint256) paymentsBidder;
-
+contract UtilitiesV1 is UtilitiesStorage, Ownable {
 	//TODO: multiple bidders
 	event Deposit(address from, address to, uint256 amount);
 	event Withdraw(address from, address to, uint256 amount);
 	event Fine(address from, address to, uint256 amount);
 	event PaymentPublisher(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
 	event PaymentBidder(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
-
-	constructor () public {}
 
 	//Initialization functions
 

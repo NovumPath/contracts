@@ -1,10 +1,10 @@
 const {
-	Utilities,
+	UtilitiesV1,
 	publisherWalletAddress,
 	bidderWalletAddress
 } = require('../config');
 
-Utilities.methods.makePaymentToPublisher(
+UtilitiesV1.methods.makePaymentToPublisher(
 	publisherWalletAddress,
 	18000,
 	'0x356a192b7913b04c54574d18c28d46e6395428ab',
