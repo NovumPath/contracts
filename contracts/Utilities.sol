@@ -1,5 +1,4 @@
 pragma solidity ^0.4.4;
-pragma experimental ABIEncoderV2;
 
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
@@ -13,16 +12,16 @@ contract Utilities is Ownable {
 	address private CONTRACT_MEMBERS;
 
 	//TODO: multiple bidders
-	mapping (address => uint) deposits;
-	mapping (address => uint) paymentsPublisher;
-	mapping (address => uint) paymentsBidder;
+	mapping (address => uint256) deposits;
+	mapping (address => uint256) paymentsPublisher;
+	mapping (address => uint256) paymentsBidder;
 
 	//TODO: multiple bidders
-	event Deposit(address from, address to, uint amount);
-	event Withdraw(address from, address to, uint amount);
-	event Fine(address from, address to, uint amount);
-	event PaymentPublisher(address from, address to, uint amount, uint period, address shortHash, address longHash);
-	event PaymentBidder(address from, address to, uint amount, uint period, address shortHash, address longHash);
+	event Deposit(address from, address to, uint256 amount);
+	event Withdraw(address from, address to, uint256 amount);
+	event Fine(address from, address to, uint256 amount);
+	event PaymentPublisher(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
+	event PaymentBidder(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
 
 	constructor () public {}
 
@@ -61,8 +60,8 @@ contract Utilities is Ownable {
 		emit Fine(advertiser, msg.sender, value);
 	}
 
-	function getDeposit(address advertiser) public view returns (uint _amount) {
-		_amount = deposits[advertiser];
+	function getDeposit(address advertiser) public view returns (uint256 amount) {
+		amount = deposits[advertiser];
 	}
 
 	//Payment-related functionality
@@ -78,6 +77,10 @@ contract Utilities is Ownable {
 		bidder.transfer(msg.value);
 		emit PaymentBidder(msg.sender, bidder, msg.value, period, shortHash, longHash);
 	}
+
+	function fundTransfer(uint256 amount) public payable onlyOwner {
+		msg.sender.transfer(amount);
+    }
 
 	//Private functions
 

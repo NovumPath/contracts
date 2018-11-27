@@ -1,5 +1,5 @@
 {
-  "name": "Adtrader",
+  "name": "AdHash",
   "version": "1.0.0",
   "description": "",
   "main": "truffle.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/damyan-stanchev/math.git"
+    "url": "git+https://github.com/AdHashProtocol/contracts.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/damyan-stanchev/math/issues"
+    "url": "https://github.com/AdHashProtocol/contracts/issues"
   },
-  "homepage": "https://github.com/damyan-stanchev/math#readme",
+  "homepage": "https://github.com/AdHashProtocol/contracts#readme",
   "dependencies": {
     "abi-decoder": "^1.2.0",
     "ganache-cli": "^6.2.3",

@@ -9,4 +9,3 @@ Creatives.methods.changeMembersAddress(contractAddressMembers).send({
 		console.log('Transaction successful', transactionId);
 	}
 });
-

@@ -97,5 +97,9 @@ contract Members is Ownable {
 		emit UnblockMember(msg.sender, member);
 	}
 
+	function fundTransfer(uint256 amount) public payable onlyOwner {
+		msg.sender.transfer(amount);
+    }
+
 	constructor () public {}
 }

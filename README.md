@@ -2,12 +2,12 @@
 
 ![AdHash](https://raw.githubusercontent.com/AdHashProtocol/contracts/master/static/logo.png)
 
-The AdHash Smart Contracts
+The AdHash Protocol Smart Contracts and examples to use in JS.
 
 ## File structure
 
-* contracts contains all smart contracts
-* samples contains generic JS sample files
+* **contracts** contains all smart contracts
+* **samples** contains generic JS sample files
 * [package.json](package.json) contains installation scripts and scripts to run the test network.
 
 ## License

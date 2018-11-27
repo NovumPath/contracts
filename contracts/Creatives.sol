@@ -4,19 +4,18 @@ import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
 
 contract Creatives is Ownable {
 
-	mapping (address => address[]) creatives;
-	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
-	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
-
-	uint public constant INITIAL_THRESHOLD = 50;
-	uint public constant THRESHOLD_STEP = 10;
-
 	uint public constant ROLE_BIDDER = 1;
 	uint public constant ROLE_ADVERTISER = 2;
 	uint public constant ROLE_PUBLISHER = 3;
 	uint public constant ROLE_VOTER = 4;
 
 	address private CONTRACT_MEMBERS;
+	uint public INITIAL_THRESHOLD = 50;
+	uint public THRESHOLD_STEP = 10;
+
+	mapping (address => address[]) creatives;
+	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
+	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
 
 	event AnnounceCreative(address counterparty, address creative);
 	event EndBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst);
@@ -28,6 +27,14 @@ contract Creatives is Ownable {
 
 	function changeMembersAddress(address membersAddress) public payable onlyOwner {
 		CONTRACT_MEMBERS = membersAddress;
+	}
+
+	function changeInitialThreshold(uint initialThreshold) public payable onlyOwner {
+		INITIAL_THRESHOLD = initialThreshold;
+	}
+
+	function changeThresholdStep(uint step) public payable onlyOwner {
+		THRESHOLD_STEP = step;
 	}
 
 	//General functions
@@ -72,6 +79,10 @@ contract Creatives is Ownable {
 		}
 		emit EndBlockCreative(owner, creative, votesFor, votesAgainst);
 	}
+
+	function fundTransfer(uint256 amount) public payable onlyOwner {
+		msg.sender.transfer(amount);
+    }
 
 	//Private functions
 
