@@ -15,7 +15,7 @@ contract MembersStorage {
 		uint role;
 		bool blocked;
 		bool voter;
-    }
+	}
 
 	mapping (address => Member) members; //TODO: multiple bidders
 }

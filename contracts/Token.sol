@@ -1,4 +1,4 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.4.21;
 
 import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol';
 import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol';
@@ -13,4 +13,6 @@ contract Token is ERC20, ERC20Detailed {
 	constructor () public ERC20Detailed("AdHash Token", "AD", 18) {
 		_mint(msg.sender, INITIAL_SUPPLY);
 	}
+
+	//TODO: minting every day?
 }

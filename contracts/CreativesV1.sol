@@ -2,23 +2,32 @@ pragma solidity ^0.4.21;
 
 import './CreativesStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract CreativesV1 is CreativesStorage, Ownable {
 
 	event AnnounceCreative(address counterparty, address creative);
-	event EndBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst);
-	event StartBlockCreative(address owner, address creative, string reason);
+	event EndBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst);
+	event StartBlockCreative(address initiator, address owner, address creative, string reason);
 
 	function changeMembersAddress(address membersAddress) public payable onlyOwner {
 		CONTRACT_MEMBERS = membersAddress;
 	}
 
-	function changeInitialThreshold(uint initialThreshold) public payable onlyOwner {
-		INITIAL_THRESHOLD = initialThreshold;
+	function changeTokenAddress(address tokenAddress) public payable onlyOwner {
+		CONTRACT_TOKEN = tokenAddress;
 	}
 
-	function changeThresholdStep(uint step) public payable onlyOwner {
-		THRESHOLD_STEP = step;
+	function changeInitialThreshold(uint amount) public payable onlyOwner {
+		INITIAL_THRESHOLD = amount;
+	}
+
+	function changeThresholdStep(uint amount) public payable onlyOwner {
+		THRESHOLD_STEP = amount;
+	}
+
+	function changeBlockDeposit(uint amount) public payable onlyOwner {
+		BLOCK_DEPOSIT = amount;
 	}
 
 	function announceCreative(address creative) public payable {
@@ -38,32 +47,45 @@ contract CreativesV1 is CreativesStorage, Ownable {
 	}
 
 	function startBlockCreative(address owner, address creative, string reason) public payable {
-		if (msg.value != 10 finney) {
-			revert("The amount sent should be exactly 0.01 ETH");
-		}
+		// Take BLOCK_DEPOSIT ADT from your account
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, address(this), BLOCK_DEPOSIT);
+		// Set the threshold for that creative if it's missing
 		if (threshold[creative] == 0) {
 			threshold[creative] = INITIAL_THRESHOLD;
 		}
-		emit StartBlockCreative(owner, creative, reason);
+		// Emit the event to notify everybody
+		emit StartBlockCreative(msg.sender, owner, creative, reason);
 	}
 
-	function endBlockCreative(address owner, address creative, uint votesFor, uint votesAgainst) public payable {
+	function endBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst) public payable {
 		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
-			revert("Only bidders can fine other members");
+			revert("Only bidders can end voting process");
 		}
 		//TODO: UPDATE FORMULAS
 		if (votesFor > votesAgainst) {
+			// Voting successful - mark as blocked and return ADT
 			blocked[creative] = true;
-			//TODO: revert deposit to author
+			IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+			tokenContractObject.transfer(initiator, BLOCK_DEPOSIT);
 		} else {
 			threshold[creative] += THRESHOLD_STEP;
 			//TODO: send deposit to voters wallet
 		}
-		emit EndBlockCreative(owner, creative, votesFor, votesAgainst);
+		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
 	}
 
-	function fundTransfer(uint256 amount) public payable onlyOwner {
-		msg.sender.transfer(amount);
+	//TODO: Check blocked status?
+
+	//Transfer functions (needed if somebody deposits something unintentionally)
+
+	function fundTransfer(uint256 value) public payable onlyOwner {
+		msg.sender.transfer(value);
+  }
+
+	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
+		IERC20 tokenContractObject = IERC20(token);
+		tokenContractObject.transfer(msg.sender, value);
   }
 
 	//Private functions

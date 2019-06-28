@@ -2,6 +2,7 @@ pragma solidity ^0.4.21;
 
 import './MembersStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract MembersV1 is MembersStorage, Ownable {
 
@@ -15,13 +16,9 @@ contract MembersV1 is MembersStorage, Ownable {
 		ALLOW_BIDDERS = value;
 	}
 
-	function getAllowBidders() public view returns (bool allowBiddersInner) {
-		allowBiddersInner = ALLOW_BIDDERS;
-	}
-
-	function registerMember(uint role, string name, string endpoint) public payable { //TODO: Register member on behalf
+	function registerMember(uint role, string name, string endpoint) public payable {
 		if (members[msg.sender].role != 0) {
-			revert("Member is already registered");
+			revert("You are already registered");
 		}
 		if (role == ROLE_BIDDER) {
 			if (!ALLOW_BIDDERS) {
@@ -40,6 +37,25 @@ contract MembersV1 is MembersStorage, Ownable {
 		emit RegisterMember(msg.sender, role, name, endpoint);
 	}
 
+	function registerMemberOnBehalf(address member, uint role, string name, string endpoint) public payable {
+		if (members[msg.sender].role != ROLE_BIDDER) {
+			revert("The sender must be a bidder");
+		}
+		if (members[member].role != 0) {
+			revert("Member is already registered");
+		}
+		if (role == ROLE_ADVERTISER) {
+			members[member] = Member(name, endpoint, role, false, false);
+		} else if (role == ROLE_PUBLISHER) {
+			members[member] = Member(name, endpoint, role, false, false);
+		} else if (role == ROLE_VOTER) {
+			members[member] = Member(name, "", role, false, true);
+		} else {
+			revert("Unknown role");
+		}
+		emit RegisterMember(member, role, name, endpoint);
+	}
+
 	function getMember(address counterparty) public view returns (uint role, string name, string endpoint, bool blocked, bool voter) {
 		role = members[counterparty].role;
 		name = members[counterparty].name;
@@ -48,6 +64,7 @@ contract MembersV1 is MembersStorage, Ownable {
 		voter = members[counterparty].voter;
 	}
 
+	// Needed by other smart contracts
 	function getMemberRole(address counterparty) public view returns (uint role) {
 		role = members[counterparty].role;
 	}
@@ -61,7 +78,22 @@ contract MembersV1 is MembersStorage, Ownable {
 		emit ChangeInformation(msg.sender, name, endpoint);
 	}
 
+	function changeInformationOnBehalf(address member, string name, string endpoint) public payable {
+		if (members[msg.sender].role != ROLE_BIDDER) {
+			revert("The sender must be a bidder");
+		}
+		if (members[member].role == 0) {
+			revert("Member not registered yet");
+		}
+		members[member].name = name;
+		members[member].endpoint = endpoint;
+		emit ChangeInformation(member, name, endpoint);
+	}
+
 	function participateInVoting(bool voting) public payable {
+		if (members[msg.sender].role == 0) {
+			revert("You are not registered yet");
+		}
 		members[msg.sender].voter = voting;
 		emit ParticipateInVoting(msg.sender, voting);
 	}
@@ -70,7 +102,7 @@ contract MembersV1 is MembersStorage, Ownable {
 		if (members[msg.sender].role != ROLE_BIDDER) {
 			revert("The sender must be a bidder");
 		}
-		members[msg.sender].blocked = true;
+		members[member].blocked = true;
 		emit BlockMember(msg.sender, member);
 	}
 
@@ -78,11 +110,18 @@ contract MembersV1 is MembersStorage, Ownable {
 		if (members[msg.sender].role != ROLE_BIDDER) {
 			revert("The sender must be a bidder");
 		}
-		members[msg.sender].blocked = false;
+		members[member].blocked = false;
 		emit UnblockMember(msg.sender, member);
 	}
 
-	function fundTransfer(uint256 amount) public payable onlyOwner {
-		msg.sender.transfer(amount);
+	//Transfer functions (needed if somebody deposits something unintentionally)
+
+	function fundTransfer(uint256 value) public payable onlyOwner {
+		msg.sender.transfer(value);
+  }
+
+	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
+		IERC20 tokenContractObject = IERC20(token);
+		tokenContractObject.transfer(msg.sender, value);
   }
 }

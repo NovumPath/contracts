@@ -10,8 +10,5 @@ contract UtilitiesStorage {
 	address public CONTRACT_MEMBERS;
 	address public CONTRACT_TOKEN;
 
-	//TODO: multiple bidders
-	mapping (address => uint256) deposits;
-	mapping (address => uint256) paymentsPublisher;
-	mapping (address => uint256) paymentsBidder;
+	mapping (address => mapping (address => uint256)) deposits;
 }
