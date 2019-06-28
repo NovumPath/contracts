@@ -64,7 +64,7 @@ contract CreativesV1 is CreativesStorage, Ownable {
 
 	function fundTransfer(uint256 amount) public payable onlyOwner {
 		msg.sender.transfer(amount);
-    }
+  }
 
 	//Private functions
 

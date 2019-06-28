@@ -8,6 +8,7 @@ contract UtilitiesStorage {
 	uint public constant ROLE_VOTER = 4;
 
 	address public CONTRACT_MEMBERS;
+	address public CONTRACT_TOKEN;
 
 	//TODO: multiple bidders
 	mapping (address => uint256) deposits;

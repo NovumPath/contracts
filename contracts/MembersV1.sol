@@ -84,5 +84,5 @@ contract MembersV1 is MembersStorage, Ownable {
 
 	function fundTransfer(uint256 amount) public payable onlyOwner {
 		msg.sender.transfer(amount);
-    }
+  }
 }

@@ -2,9 +2,12 @@ pragma solidity ^0.4.21;
 
 import './UtilitiesStorage.sol';
 import '../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol';
+import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract UtilitiesV1 is UtilitiesStorage, Ownable {
-	//TODO: multiple bidders
+
+	//TODO: multiple bidders support
+
 	event Deposit(address from, address to, uint256 amount);
 	event Withdraw(address from, address to, uint256 amount);
 	event Fine(address from, address to, uint256 amount);
@@ -17,11 +20,17 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		CONTRACT_MEMBERS = membersAddress;
 	}
 
+	function changeTokenAddress(address tokenAddress) public payable onlyOwner {
+		CONTRACT_TOKEN = tokenAddress;
+	}
+
 	//Deposit-related functionality
 
-	function makeDeposit(address bidder) public payable {
-		deposits[msg.sender] += msg.value;
-		emit Deposit(msg.sender, bidder, msg.value);
+	function makeDeposit(address bidder, uint256 value) public payable {
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, address(this), value);
+		deposits[msg.sender] += value;
+		emit Deposit(msg.sender, bidder, value);
 	}
 
 	function withdrawDeposit(address bidder, uint256 value) public payable {
@@ -29,7 +38,8 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 			revert("Not enough amount");
 		}
 		//TODO: check if there are no active votings
-		msg.sender.transfer(value);
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transfer(msg.sender, value);
 		deposits[msg.sender] -= value;
 		emit Withdraw(msg.sender, bidder, value);
 	}
@@ -41,7 +51,8 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		if (deposits[advertiser] < value) {
 			revert("Not enough amount");
 		}
-		msg.sender.transfer(value);
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transfer(msg.sender, value);
 		deposits[advertiser] -= value;
 		emit Fine(advertiser, msg.sender, value);
 	}
@@ -52,21 +63,28 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 
 	//Payment-related functionality
 
-	function makePaymentToPublisher(address publisher, uint period, address shortHash, address longHash) public payable {
-		paymentsPublisher[publisher] += msg.value;
-		publisher.transfer(msg.value);
-		emit PaymentPublisher(msg.sender, publisher, msg.value, period, shortHash, longHash);
+	function makePaymentToPublisher(address publisher, uint256 value, uint period, address shortHash, address longHash) public payable {
+		paymentsPublisher[publisher] += value;
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, publisher, value);
+		emit PaymentPublisher(msg.sender, publisher, value, period, shortHash, longHash);
 	}
 
-	function makePaymentToBidder(address bidder, uint period, address shortHash, address longHash) public payable {
-		paymentsBidder[bidder] += msg.value;
-		bidder.transfer(msg.value);
-		emit PaymentBidder(msg.sender, bidder, msg.value, period, shortHash, longHash);
+	function makePaymentToBidder(address bidder, uint256 value, uint period, address shortHash, address longHash) public payable {
+		paymentsBidder[bidder] += value;
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, bidder, value);
+		emit PaymentBidder(msg.sender, bidder, value, period, shortHash, longHash);
 	}
 
-	function fundTransfer(uint256 amount) public payable onlyOwner {
-		msg.sender.transfer(amount);
-    }
+	function fundTransfer(uint256 value) public payable onlyOwner {
+		msg.sender.transfer(value);
+  }
+
+	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
+		IERC20 tokenContractObject = IERC20(token);
+		tokenContractObject.transfer(msg.sender, value);
+  }
 
 	//Private functions
 
