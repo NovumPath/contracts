@@ -18,6 +18,10 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		CONTRACT_TOKEN = tokenAddress;
 	}
 
+	function changeVoterAddress(address voterAddress) public payable onlyOwner {
+		VOTER_POOL = voterAddress;
+	}
+
 	function changeInitialThreshold(uint amount) public payable onlyOwner {
 		INITIAL_THRESHOLD = amount;
 	}
@@ -28,6 +32,10 @@ contract CreativesV1 is CreativesStorage, Ownable {
 
 	function changeBlockDeposit(uint amount) public payable onlyOwner {
 		BLOCK_DEPOSIT = amount;
+	}
+
+	function changeMajorityPercentage(uint amount) public payable onlyOwner {
+		MAJORITY = amount;
 	}
 
 	function announceCreative(address creative) public payable {
@@ -62,20 +70,22 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
 			revert("Only bidders can end voting process");
 		}
-		//TODO: UPDATE FORMULAS
-		if (votesFor > votesAgainst) {
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		if (votesFor * 1000 / (votesFor + votesAgainst) > MAJORITY) {
 			// Voting successful - mark as blocked and return ADT
 			blocked[creative] = true;
-			IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 			tokenContractObject.transfer(initiator, BLOCK_DEPOSIT);
 		} else {
+			// Voting unsuccessful - increase difficulty and move ADT to pool
 			threshold[creative] += THRESHOLD_STEP;
-			//TODO: send deposit to voters wallet
+			tokenContractObject.transfer(VOTER_POOL, BLOCK_DEPOSIT);
 		}
 		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
 	}
 
-	//TODO: Check blocked status?
+	function getBlockedStatus(address creative) public view returns (bool status) {
+		status = blocked[creative];
+	}
 
 	//Transfer functions (needed if somebody deposits something unintentionally)
 

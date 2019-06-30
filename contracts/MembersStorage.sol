@@ -17,5 +17,5 @@ contract MembersStorage {
 		bool voter;
 	}
 
-	mapping (address => Member) members; //TODO: multiple bidders
+	mapping (address => Member) members;
 }
