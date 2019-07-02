@@ -83,32 +83,34 @@ contract CreativesV1 is CreativesStorage, Ownable {
 	//////////////////////////////////////////////////
 
 	function startBlockCreative(address owner, address creative, string reason) public payable {
-		// Take BLOCK_DEPOSIT AD from your account
-		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
-		tokenContractObject.transferFrom(msg.sender, address(this), BLOCK_DEPOSIT);
 		// Set the threshold for that creative if it's missing
 		if (threshold[creative] == 0) {
 			threshold[creative] = INITIAL_THRESHOLD;
 		}
 		// Emit the event to notify everybody
 		emit StartBlockCreative(msg.sender, owner, creative, reason);
+		// Take BLOCK_DEPOSIT AD from your account
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, address(this), BLOCK_DEPOSIT);
 	}
 
 	function endBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst) public payable {
+		address transferTo;
 		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
 			revert("Only bidders can end voting process");
 		}
+		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 		if (votesFor * 1000 / (votesFor + votesAgainst) > MAJORITY) {
 			// Voting successful - mark as blocked and return ADT
 			blocked[creative] = true;
-			tokenContractObject.transfer(initiator, BLOCK_DEPOSIT);
+			transferTo = initiator;
 		} else {
 			// Voting unsuccessful - increase difficulty and move ADT to pool
 			threshold[creative] += THRESHOLD_STEP;
-			tokenContractObject.transfer(VOTER_POOL, BLOCK_DEPOSIT);
+			transferTo = VOTER_POOL;
 		}
-		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
+		tokenContractObject.transfer(transferTo, BLOCK_DEPOSIT);
 	}
 
 	//////////////////////////////////////////////////

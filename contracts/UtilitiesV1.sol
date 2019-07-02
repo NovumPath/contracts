@@ -33,10 +33,10 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 	//////////////////////////////////////////////////
 
 	function makeDeposit(address bidder, uint256 value) public payable {
-		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
-		tokenContractObject.transferFrom(msg.sender, address(this), value);
 		deposits[bidder][msg.sender] += value;
 		emit Deposit(msg.sender, bidder, value);
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transferFrom(msg.sender, address(this), value);
 	}
 
 	function withdrawDeposit(address advertiser, uint256 value) public payable {
@@ -46,12 +46,12 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		if (deposits[msg.sender][advertiser] < value) {
 			revert("Not enough amount");
 		}
-		// Send the amount back to the advertiser
-		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
-		tokenContractObject.transfer(advertiser, value);
 		// Adjust the deposits array and emit an event
 		deposits[msg.sender][advertiser] -= value;
 		emit Withdraw(advertiser, msg.sender, value);
+		// Send the amount back to the advertiser
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transfer(advertiser, value);
 	}
 
 	function fineDeposit(address advertiser, uint256 value) public payable {
@@ -61,12 +61,12 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		if (deposits[msg.sender][advertiser] < value) {
 			revert("Not enough amount");
 		}
-		// Send the amont to the bidder
-		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
-		tokenContractObject.transfer(msg.sender, value);
 		// Adjust the deposits array and emit an event
 		deposits[msg.sender][advertiser] -= value;
 		emit Fine(advertiser, msg.sender, value);
+		// Send the amont to the bidder
+		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
+		tokenContractObject.transfer(msg.sender, value);
 	}
 
 	function getDeposit(address advertiser, address bidder) public view returns (uint256 amount) {
@@ -78,15 +78,15 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 	//////////////////////////////////////////////////
 
 	function makePaymentToPublisher(address publisher, uint256 value, uint period, address shortHash, address longHash) public payable {
+		emit PaymentPublisher(msg.sender, publisher, value, period, shortHash, longHash);
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 		tokenContractObject.transferFrom(msg.sender, publisher, value);
-		emit PaymentPublisher(msg.sender, publisher, value, period, shortHash, longHash);
 	}
 
 	function makePaymentToBidder(address bidder, uint256 value, uint period, address shortHash, address longHash) public payable {
+		emit PaymentBidder(msg.sender, bidder, value, period, shortHash, longHash);
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 		tokenContractObject.transferFrom(msg.sender, bidder, value);
-		emit PaymentBidder(msg.sender, bidder, value, period, shortHash, longHash);
 	}
 
 	//////////////////////////////////////////////////
