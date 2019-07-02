@@ -16,7 +16,8 @@ contract CreativesStorage {
 	uint public BLOCK_DEPOSIT = 10000000000000000; //0.01 ADT
 	uint public MAJORITY = 666; // 0.666 considered as supermajority
 
+	mapping (address => address) creativeOwner;
 	mapping (address => address[]) creatives;
-	mapping (address => uint) threshold; //TODO: DIFFERENT PER BIDDER
-	mapping (address => bool) blocked; //TODO: DIFFERENT PER BIDDER
+	mapping (address => uint) threshold;
+	mapping (address => bool) blocked;
 }

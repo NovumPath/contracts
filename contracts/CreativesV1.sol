@@ -6,9 +6,17 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract CreativesV1 is CreativesStorage, Ownable {
 
+	//////////////////////////////////////////////////
+	// Events
+	//////////////////////////////////////////////////
+
 	event AnnounceCreative(address counterparty, address creative);
 	event EndBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst);
 	event StartBlockCreative(address initiator, address owner, address creative, string reason);
+
+	//////////////////////////////////////////////////
+	// Owner-only setup functions
+	//////////////////////////////////////////////////
 
 	function changeMembersAddress(address membersAddress) public payable onlyOwner {
 		CONTRACT_MEMBERS = membersAddress;
@@ -38,15 +46,23 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		MAJORITY = amount;
 	}
 
+	//////////////////////////////////////////////////
+	// Creative related functions
+	//////////////////////////////////////////////////
+
 	function announceCreative(address creative) public payable {
+		// Store the creative in sender's array
 		creatives[msg.sender].push(creative);
+		// Store the first account that announced that creative
+		if (creativeOwner[creative] == 0x0) {
+			creativeOwner[creative] = msg.sender;
+		}
 		emit AnnounceCreative(msg.sender, creative);
 	}
 
 	function announceCreatives(address[] creativesList) public payable {
 		for (uint j; j < creativesList.length; j++) {
-			creatives[msg.sender].push(creativesList[j]);
-			emit AnnounceCreative(msg.sender, creativesList[j]);
+			announceCreative(creativesList[j]);
 		}
 	}
 
@@ -54,8 +70,20 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		_creatives = creatives[member];
 	}
 
+	function getBlockedStatus(address creative) public view returns (bool status) {
+		status = blocked[creative];
+	}
+
+	function getFirstOwner(address creative) public view returns (address owner) {
+		owner = creativeOwner[creative];
+	}
+
+	//////////////////////////////////////////////////
+	// Voting related functions
+	//////////////////////////////////////////////////
+
 	function startBlockCreative(address owner, address creative, string reason) public payable {
-		// Take BLOCK_DEPOSIT ADT from your account
+		// Take BLOCK_DEPOSIT AD from your account
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 		tokenContractObject.transferFrom(msg.sender, address(this), BLOCK_DEPOSIT);
 		// Set the threshold for that creative if it's missing
@@ -83,11 +111,9 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
 	}
 
-	function getBlockedStatus(address creative) public view returns (bool status) {
-		status = blocked[creative];
-	}
-
-	//Transfer functions (needed if somebody deposits something unintentionally)
+	//////////////////////////////////////////////////
+	// Transfer functions (for unintentional deposits)
+	//////////////////////////////////////////////////
 
 	function fundTransfer(uint256 value) public payable onlyOwner {
 		msg.sender.transfer(value);
@@ -98,7 +124,9 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		tokenContractObject.transfer(msg.sender, value);
   }
 
-	//Private functions
+	//////////////////////////////////////////////////
+	// Private functions
+	//////////////////////////////////////////////////
 
 	function getMemberRole(address counterparty) private returns (uint role) {
 		bytes4 sig = bytes4(keccak256("getMemberRole(address)"));
