@@ -6,15 +6,27 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract MembersV1 is MembersStorage, Ownable {
 
+	//////////////////////////////////////////////////
+	// Events
+	//////////////////////////////////////////////////
+
 	event RegisterMember(address member, uint role, string name, string endpoint);
 	event ChangeInformation(address member, string name, string endpoint);
 	event ParticipateInVoting(address member, bool voting);
 	event BlockMember(address bidder, address member);
 	event UnblockMember(address bidder, address member);
 
+	//////////////////////////////////////////////////
+	// Owner-only setup functions
+	//////////////////////////////////////////////////
+
 	function allowBidders(bool value) public payable onlyOwner {
 		ALLOW_BIDDERS = value;
 	}
+
+	//////////////////////////////////////////////////
+	// Member related functions
+	//////////////////////////////////////////////////
 
 	function registerMember(uint role, string name, string endpoint) public payable {
 		if (members[msg.sender].role != 0) {
@@ -114,14 +126,16 @@ contract MembersV1 is MembersStorage, Ownable {
 		emit UnblockMember(msg.sender, member);
 	}
 
-	//Transfer functions (needed if somebody deposits something unintentionally)
+	//////////////////////////////////////////////////
+	// Transfer functions (for unintentional deposits)
+	//////////////////////////////////////////////////
 
 	function fundTransfer(uint256 value) public payable onlyOwner {
 		msg.sender.transfer(value);
-  }
+	}
 
 	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
 		IERC20 tokenContractObject = IERC20(token);
 		tokenContractObject.transfer(msg.sender, value);
-  }
+	}
 }

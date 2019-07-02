@@ -117,12 +117,12 @@ contract CreativesV1 is CreativesStorage, Ownable {
 
 	function fundTransfer(uint256 value) public payable onlyOwner {
 		msg.sender.transfer(value);
-  }
+	}
 
 	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
 		IERC20 tokenContractObject = IERC20(token);
 		tokenContractObject.transfer(msg.sender, value);
-  }
+	}
 
 	//////////////////////////////////////////////////
 	// Private functions

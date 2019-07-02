@@ -6,13 +6,19 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/IERC20.sol';
 
 contract UtilitiesV1 is UtilitiesStorage, Ownable {
 
+	//////////////////////////////////////////////////
+	// Events
+	//////////////////////////////////////////////////
+
 	event Deposit(address from, address to, uint256 amount);
 	event Withdraw(address from, address to, uint256 amount);
 	event Fine(address from, address to, uint256 amount);
 	event PaymentPublisher(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
 	event PaymentBidder(address from, address to, uint256 amount, uint period, address shortHash, address longHash);
 
-	//Initialization functions
+	//////////////////////////////////////////////////
+	// Owner-only setup functions
+	//////////////////////////////////////////////////
 
 	function changeMembersAddress(address membersAddress) public payable onlyOwner {
 		CONTRACT_MEMBERS = membersAddress;
@@ -22,7 +28,9 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		CONTRACT_TOKEN = tokenAddress;
 	}
 
-	//Deposit-related functionality
+	//////////////////////////////////////////////////
+	// Deposit related functions
+	//////////////////////////////////////////////////
 
 	function makeDeposit(address bidder, uint256 value) public payable {
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
@@ -65,7 +73,9 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		amount = deposits[bidder][advertiser];
 	}
 
-	//Payment-related functionality
+	//////////////////////////////////////////////////
+	// Payment related functions
+	//////////////////////////////////////////////////
 
 	function makePaymentToPublisher(address publisher, uint256 value, uint period, address shortHash, address longHash) public payable {
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
@@ -79,18 +89,22 @@ contract UtilitiesV1 is UtilitiesStorage, Ownable {
 		emit PaymentBidder(msg.sender, bidder, value, period, shortHash, longHash);
 	}
 
-	//Transfer functions (needed if somebody deposits something unintentionally)
+	//////////////////////////////////////////////////
+	// Transfer functions (for unintentional deposits)
+	//////////////////////////////////////////////////
 
 	function fundTransfer(uint256 value) public payable onlyOwner {
 		msg.sender.transfer(value);
-  }
+	}
 
 	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
 		IERC20 tokenContractObject = IERC20(token);
 		tokenContractObject.transfer(msg.sender, value);
-  }
+	}
 
-	//Private functions
+	//////////////////////////////////////////////////
+	// Private functions
+	//////////////////////////////////////////////////
 
 	function getMemberRole(address counterparty) private returns (uint role) {
 		bytes4 sig = bytes4(keccak256("getMemberRole(address)"));

@@ -6,8 +6,19 @@ import '../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20Detaile
 
 contract Token is ERC20, ERC20Detailed, Ownable {
 
+	/**
+	 * Initial supply of the currency
+	 */
 	uint256 public constant INITIAL_SUPPLY = (10 ** 9) * (10 ** 18);
+
+	/**
+	 * Marker for which days the minting is already collected
+	 */
 	mapping (uint => bool) minted;
+
+	/**
+	 * Marker for the deployment time of the contract
+	 */
 	uint deployment;
 
 	/**
@@ -41,8 +52,8 @@ contract Token is ERC20, ERC20Detailed, Ownable {
 				// Second year - 3% inflation - 1.000081 ^ 365
 				toMint += (totalSupply() * 81 / 1000000);
 			} else if (day >= 365 * 5) {
-				// Any other year - 2% inflation - 1.000055 ^ 365
-				toMint += (totalSupply() * 55 / 1000000);
+				// Any other year - 2% inflation - 1.000054 ^ 365
+				toMint += (totalSupply() * 54 / 1000000);
 			}
 			_mint(msg.sender, toMint);
 		} else {
