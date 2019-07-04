@@ -94,11 +94,8 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		tokenContractObject.transferFrom(msg.sender, address(this), BLOCK_DEPOSIT);
 	}
 
-	function endBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst) public payable {
+	function endBlockCreative(address initiator, address owner, address creative, uint votesFor, uint votesAgainst) public payable onlyOwner {
 		address transferTo;
-		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
-			revert("Only bidders can end voting process");
-		}
 		emit EndBlockCreative(initiator, owner, creative, votesFor, votesAgainst);
 		IERC20 tokenContractObject = IERC20(CONTRACT_TOKEN);
 		if (votesFor * 1000 / (votesFor + votesAgainst) > MAJORITY) {
@@ -125,31 +122,4 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		IERC20 tokenContractObject = IERC20(token);
 		tokenContractObject.transfer(msg.sender, value);
 	}
-
-	//////////////////////////////////////////////////
-	// Private functions
-	//////////////////////////////////////////////////
-
-	function getMemberRole(address counterparty) private returns (uint role) {
-		bytes4 sig = bytes4(keccak256("getMemberRole(address)"));
-		address to = CONTRACT_MEMBERS;
-		assembly {
-			let x := mload(0x40) //Find empty storage location using "free memory pointer"
-			mstore(x, sig) //Place signature at begining of empty storage
-			mstore(add(x, 0x04), counterparty) //Place first argument directly next to signature
-			//mstore(add(x, 0x24), b) //Place second argument next to first, padded to 32 bytes
-			let success := call(
-				5000, //5k gas
-				to, //To address
-				0, //No value to send
-				x, //Inputs are stored at location x
-				0x24, //Inputs are 32+4 bytes long
-				x, //Store output over input (saves space)
-				0x20
-			) //Outputs are 32 bytes long
-			role := mload(x) //Assign output value
-			mstore(0x40, add(x, 0x24)) // Set storage pointer to empty space
-		}
-	}
 }
-
