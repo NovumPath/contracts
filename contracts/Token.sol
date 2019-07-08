@@ -43,13 +43,13 @@ contract Token is ERC20, ERC20Detailed, Ownable {
 				// Second year - 8% inflation - 1.000211 ^ 365
 				toMint += (totalSupply() * 211 / 1000000);
 			} else if (day >= 365 * 2 && day < 365 * 3) {
-				// Second year - 6% inflation - 1.000160 ^ 365
+				// 3rd year - 6% inflation - 1.000160 ^ 365
 				toMint += (totalSupply() * 160 / 1000000);
 			} else if (day >= 365 * 3 && day < 365 * 4) {
-				// Second year - 4% inflation - 1.000108 ^ 365
+				// 4th year - 4% inflation - 1.000108 ^ 365
 				toMint += (totalSupply() * 108 / 1000000);
 			} else if (day >= 365 * 4 && day < 365 * 5) {
-				// Second year - 3% inflation - 1.000081 ^ 365
+				// 5th year - 3% inflation - 1.000081 ^ 365
 				toMint += (totalSupply() * 81 / 1000000);
 			} else if (day >= 365 * 5) {
 				// Any other year - 2% inflation - 1.000054 ^ 365
