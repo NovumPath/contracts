@@ -60,9 +60,28 @@ contract CreativesV1 is CreativesStorage, Ownable {
 		emit AnnounceCreative(msg.sender, creative);
 	}
 
+	function announceCreativeOnBehalf(address member, address creative) public payable {
+		if (getMemberRole(msg.sender) != ROLE_BIDDER) {
+			revert("The sender must be a bidder");
+		}
+		// Store the creative in sender's array
+		creatives[member].push(creative);
+		// Store the first account that announced that creative
+		if (creativeOwner[creative] == 0x0) {
+			creativeOwner[creative] = member;
+		}
+		emit AnnounceCreative(member, creative);
+	}
+
 	function announceCreatives(address[] creativesList) public payable {
 		for (uint j; j < creativesList.length; j++) {
 			announceCreative(creativesList[j]);
+		}
+	}
+
+	function announceCreativesOnBehalf(address member, address[] creativesList) public payable {
+		for (uint j; j < creativesList.length; j++) {
+			announceCreativeOnBehalf(member, creativesList[j]);
 		}
 	}
 
@@ -121,5 +140,31 @@ contract CreativesV1 is CreativesStorage, Ownable {
 	function ERC20Transfer(address token, uint256 value) public payable onlyOwner {
 		IERC20 tokenContractObject = IERC20(token);
 		tokenContractObject.transfer(msg.sender, value);
+	}
+
+	//////////////////////////////////////////////////
+	// Private functions
+	//////////////////////////////////////////////////
+
+	function getMemberRole(address counterparty) private returns (uint role) {
+		bytes4 sig = bytes4(keccak256("getMemberRole(address)"));
+		address to = CONTRACT_MEMBERS;
+		assembly {
+			let x := mload(0x40) //Find empty storage location using "free memory pointer"
+			mstore(x, sig) //Place signature at begining of empty storage
+			mstore(add(x, 0x04), counterparty) //Place first argument directly next to signature
+			//mstore(add(x, 0x24), b) //Place second argument next to first, padded to 32 bytes
+			let success := call(
+				5000, //5k gas
+				to, //To address
+				0, //No value to send
+				x, //Inputs are stored at location x
+				0x24, //Inputs are 32+4 bytes long
+				x, //Store output over input (saves space)
+				0x20
+			) //Outputs are 32 bytes long
+			role := mload(x) //Assign output value
+			mstore(0x40, add(x, 0x24)) // Set storage pointer to empty space
+		}
 	}
 }
