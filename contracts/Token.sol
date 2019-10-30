@@ -9,7 +9,7 @@ contract Token is ERC20, ERC20Detailed, Ownable {
 	/**
 	 * Initial supply of the currency
 	 */
-	uint256 public constant INITIAL_SUPPLY = (10 ** 9) * (10 ** 18);
+	uint256 public constant INITIAL_SUPPLY = (10 ** 8) * (10 ** 18);
 
 	/**
 	 * Marker for which days the minting is already collected
@@ -37,21 +37,18 @@ contract Token is ERC20, ERC20Detailed, Ownable {
 			minted[day] = true;
 			uint256 toMint = 0;
 			if (day >= 365 * 0 && day < 365 * 1) {
-				// First year - 10% inflation - 1.000262 ^ 365
-				toMint += (totalSupply() * 262 / 1000000);
-			} else if (day >= 365 * 1 && day < 365 * 2) {
-				// Second year - 8% inflation - 1.000211 ^ 365
+				// 1st year - 8% inflation - 1.000211 ^ 365
 				toMint += (totalSupply() * 211 / 1000000);
-			} else if (day >= 365 * 2 && day < 365 * 3) {
-				// 3rd year - 6% inflation - 1.000160 ^ 365
+			} else if (day >= 365 * 1 && day < 365 * 2) {
+				// 2nd year - 6% inflation - 1.000160 ^ 365
 				toMint += (totalSupply() * 160 / 1000000);
-			} else if (day >= 365 * 3 && day < 365 * 4) {
-				// 4th year - 4% inflation - 1.000108 ^ 365
+			} else if (day >= 365 * 2 && day < 365 * 3) {
+				// 3th year - 4% inflation - 1.000108 ^ 365
 				toMint += (totalSupply() * 108 / 1000000);
-			} else if (day >= 365 * 4 && day < 365 * 5) {
-				// 5th year - 3% inflation - 1.000081 ^ 365
+			} else if (day >= 365 * 3 && day < 365 * 4) {
+				// 4th year - 3% inflation - 1.000081 ^ 365
 				toMint += (totalSupply() * 81 / 1000000);
-			} else if (day >= 365 * 5) {
+			} else if (day >= 365 * 4) {
 				// Any other year - 2% inflation - 1.000054 ^ 365
 				toMint += (totalSupply() * 54 / 1000000);
 			}
