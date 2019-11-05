@@ -1,10 +1,6 @@
-const {
-	UtilitiesV1,
-	advertiserWalletAddress,
-	bidderWalletAddress
-} = require('../config');
+const { Token, bidderWalletAddress, advertiserWalletAddress } = require('../config');
 
-UtilitiesV1.methods.fineDeposit(advertiserWalletAddress, "10000").send({
+Token.methods.transfer(advertiserWalletAddress, process.argv[2]).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {

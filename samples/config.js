@@ -30,6 +30,11 @@ const networkUtilitiesV1 = Object.keys(buildInfoUtilitiesV1.networks)[Object.key
 exports.contractAddressUtilitiesV1 = buildInfoUtilitiesV1.networks[networkUtilitiesV1].address;
 exports.abiUtilitiesV1 = buildInfoUtilitiesV1.abi;
 
+const buildInfoToken = require('../build/contracts/Token.json');
+const networkToken = Object.keys(buildInfoToken.networks)[Object.keys(buildInfoToken.networks).length - 1];
+exports.contractAddressToken = buildInfoToken.networks[networkToken].address;
+exports.abiToken = buildInfoToken.abi;
+
 exports.httpProvider = 'http://localhost:8545';
 
 exports.bidderWalletAddress = '0x19e7e376e7c213b7e7e7e46cc70a5dd086daff2a';
@@ -80,5 +85,11 @@ exports.UtilitiesRegistry = new web3.eth.Contract(
 exports.UtilitiesV1 = new web3.eth.Contract(
 	exports.abiUtilitiesV1,
 	exports.contractAddressUtilitiesRegistry, //!
+	{ gas: 300000 }
+);
+
+exports.Token = new web3.eth.Contract(
+	exports.abiToken,
+	exports.contractAddressToken,
 	{ gas: 300000 }
 );

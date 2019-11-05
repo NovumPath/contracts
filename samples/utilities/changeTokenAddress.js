@@ -1,10 +1,10 @@
 const {
 	UtilitiesV1,
-	advertiserWalletAddress,
+	contractAddressToken,
 	bidderWalletAddress
 } = require('../config');
 
-UtilitiesV1.methods.fineDeposit(advertiserWalletAddress, "10000").send({
+UtilitiesV1.methods.changeTokenAddress(contractAddressToken).send({
 	from: bidderWalletAddress
 }, function(error, transactionId) {
 	if (error) {

@@ -1,6 +1,9 @@
-const { UtilitiesV1, advertiserWalletAddress } = require('../config');
+const { UtilitiesV1, advertiserWalletAddress, bidderWalletAddress } = require('../config');
 
-UtilitiesV1.methods.getDeposit(advertiserWalletAddress).call(function(error, result) {
+UtilitiesV1.methods.getDeposit(
+	advertiserWalletAddress,
+	bidderWalletAddress
+).call(function(error, result) {
 	if (error) {
 		console.log('Error', error);
 	} else {
