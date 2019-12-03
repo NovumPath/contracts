@@ -13,6 +13,12 @@ The AdHash Protocol Smart Contracts and examples to use in JavaScript.
 **Token.sol**
 - ERC20 token based on OpenZeppelin implementation.
 - Initial supply 100M AD tokens.
+- Inflation minted daily to the owner:
+	- 1 year 8%
+	- 2 year 6%
+	- 3 year 4%
+	- 4 year 3%
+	- 5+ year 2%
 
 **MembersStorage.sol**
 - Interface for members contract.
