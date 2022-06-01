@@ -1,3 +1,7 @@
 node_modules/
 build/
 package-lock.json
+solana_contracts/*/.DS_Store
+solana_contracts/*/target
+.DS_Store
+.gitignore
