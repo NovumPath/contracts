@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AdHashProtocol/contracts.git"
+    "url": "git+https://github.com/NovumPath/contracts.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AdHashProtocol/contracts/issues"
+    "url": "https://github.com/NovumPath/contracts/issues"
   },
-  "homepage": "https://github.com/AdHashProtocol/contracts#readme",
+  "homepage": "https://github.com/NovumPath/contracts#readme",
   "dependencies": {
     "abi-decoder": "^1.2.0",
     "ganache-cli": "^6.2.3",

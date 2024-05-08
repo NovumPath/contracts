@@ -1,6 +1,6 @@
 # The AdHash Smart Contracts
 
-![AdHash](https://raw.githubusercontent.com/AdHashProtocol/contracts/master/static/logo.png)
+![AdHash](https://raw.githubusercontent.com/NovumPath/contracts/master/static/logo.png)
 
 The AdHash Protocol Smart Contracts and examples to use in JavaScript.
 
